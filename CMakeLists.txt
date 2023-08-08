@@ -19,10 +19,16 @@ set(engine_sources
 	src/utils/ini_configuration.cc
 	src/utils/l_parser.cc
 		src/utils/easy_image.cc
-		src/points_n_lines.cc
 		src/l_systems.cc
 		src/generate.cc
 		src/utils/vector3d.cc
+		src/2D/points_n_lines.cc
+		src/3D/transformations.cc
+		src/3D/wireframes.cpp
+		src/3D/world3D.cpp
+		src/3D/figure.cpp
+		src/utils/utilities.cpp
+		src/utils/utilities.h
 )
 
 ############################################################

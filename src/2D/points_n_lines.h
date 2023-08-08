@@ -1,7 +1,7 @@
 #ifndef ENGINE_POINTS_N_LINES_H
 #define ENGINE_POINTS_N_LINES_H
 
-#include "utils/easy_image.h"
+#include "../utils/easy_image.h"
 
 class Point2D{
 public:

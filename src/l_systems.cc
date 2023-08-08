@@ -2,7 +2,7 @@
 #include "l_systems.h"
 #define _USE_MATH_DEFINES
 
-Lines2D draw2DLSystem(const LParser::LSystem2D &l_system, img::Color color){
+Lines2D LSystem::draw2DLSystem(const LParser::LSystem2D &l_system, img::Color color){
     // Initiate lineslist
     Lines2D lineslist;
 
@@ -75,11 +75,9 @@ Lines2D draw2DLSystem(const LParser::LSystem2D &l_system, img::Color color){
     return lineslist;
 }
 
-img::EasyImage generate2DLsystem(std::string filename, const int size, const ini::DoubleTuple& backgroundcolor, ini::DoubleTuple color){
+img::EasyImage LSystem::generate2DLsystem(std::string filename, const int size, const ini::DoubleTuple& backgroundcolor, ini::DoubleTuple color){
     LParser::LSystem2D l_system;
     img::EasyImage image;
-
-//    filename = "L2D files/" + filename;
 
     std::ifstream input_stream(filename);
 

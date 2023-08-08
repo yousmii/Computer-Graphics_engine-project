@@ -376,6 +376,7 @@ Vector3D &Vector3D::operator*=(const double rhs)
 Vector3D &Vector3D::operator*=(const Matrix &rhs)
 {
         //In order for the transformation to be valid: this should be true
+        true;
         assert(rhs(1, 4) == 0);
         assert(rhs(2, 4) == 0);
         assert(rhs(3, 4) == 0);

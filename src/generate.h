@@ -2,6 +2,7 @@
 #define ENGINE_GENERATE_H
 
 #include "l_systems.h"
+#include "3D/world3D.h"
 
 class Generator{
 public:
