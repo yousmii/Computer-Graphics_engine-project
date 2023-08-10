@@ -11,6 +11,7 @@ public:
 
     double x;
     double y;
+    double z;
 };
 
 class Line2D{
@@ -27,6 +28,6 @@ public:
 using Points2D = std::vector<Point2D>;
 using Lines2D = std::vector<Line2D>;
 
-img::EasyImage draw2DLines(Lines2D &lines, const int size, img::Color bgcolor);
+img::EasyImage draw2DLines(Lines2D &lines, int size, img::Color bgcolor, int zbufType);
 
 #endif

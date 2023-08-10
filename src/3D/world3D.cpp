@@ -2,6 +2,12 @@
 
 World3D::World3D(const ini::Configuration &configuration) {
     type = configuration["General"]["type"].as_string_or_die();
+
+    if (type == "Wireframe"){zbufType = 0;}
+    else if (type == "ZBufferedWireframe"){zbufType = 1;}
+    else {throw std::runtime_error("Unknown type");}
+
+
     size = configuration["General"]["size"].as_int_or_default(1000);
     d = configuration["General"]["d"].as_double_or_default(1.0);
 
@@ -36,6 +42,7 @@ World3D::World3D(const ini::Configuration &configuration) {
 
 
         // Parse points and faces
+
         if(figure.type == "LineDrawing") {
             int npoints = config["nrPoints"].as_int_or_die();
             for (int p = 0; p < npoints; p++) {
@@ -55,6 +62,55 @@ World3D::World3D(const ini::Configuration &configuration) {
             }
         }
 
+        else if(figure.type == "Cube"){
+            figure.createCube();
+        }
+        else if(figure.type == "Tetrahedron"){
+            figure.createTetrahedron();
+        }
+        else if(figure.type == "Octahedron"){
+            figure.createOctahedron();
+        }
+        else if(figure.type == "Icosahedron"){
+            figure.createIcosahedron();
+        }
+        else if(figure.type == "Dodecahedron"){
+            figure.createDodecahedron();
+        }
+        else if(figure.type == "Cone"){
+            figure.n = config["n"].as_int_or_die();
+            figure.h = config["height"].as_double_or_die();
+
+            figure.createCone();
+        }
+        else if(figure.type == "Sphere"){
+            figure.n = config["n"].as_int_or_die();
+
+            figure.createSphere();
+        }
+        else if(figure.type == "Cylinder"){
+            figure.n = config["n"].as_int_or_die();
+            figure.h = config["height"].as_double_or_die();
+
+            figure.createCylinder();
+        }
+        else if(figure.type == "Torus"){
+            figure.m = config["m"].as_int_or_default(10);
+            figure.n = config["n"].as_int_or_default(10);
+            figure.r = config["r"].as_double_or_default(1);
+            figure.R = config["R"].as_double_or_default(2);
+
+            figure.createTorus();
+        }
+        else if(figure.type == "3DLSystem"){
+            figure.filename = config["inputfile"].as_string_or_die();
+
+            figure.create3DLSystem();
+        }
+        else {
+            throw std::runtime_error("Unknown figure type:" + figure.type);
+        }
+
         figures.push_back(figure);
     }
 }
@@ -62,17 +118,16 @@ World3D::World3D(const ini::Configuration &configuration) {
 img::EasyImage World3D::drawWorld() {
     img::EasyImage image;
 
-    if (type == "Wireframe"){
+    if (type == "Wireframe" || type == "ZBufferedWireframe"){
         Lines2D lines = Wireframes::createLineDrawing(eye, figures, d);
 
         if(!lines.empty()){
-            image = draw2DLines(lines, size, background_color);
+            image = draw2DLines(lines, size, background_color, zbufType);
         }
     }
     else {
-        throw std::runtime_error("Unknown type:" + type);
+        throw std::runtime_error("Unknown type: " + type);
     }
-
 
     return image;
 }

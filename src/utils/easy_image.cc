@@ -16,11 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "easy_image.h"
+#include "utilities.h"
 #include <algorithm>
 #include <assert.h>
 #include <math.h>
 #include <iostream>
 #include <sstream>
+#include <regex>
 
 #ifndef le32toh
 #define le32toh(x) (x)
@@ -261,6 +263,131 @@ void img::EasyImage::draw_line(unsigned int x0, unsigned int y0, unsigned int x1
 			}
 		}
 	}
+}
+void img::EasyImage::draw_zbuf_line(ZBuffer &zBuffer, double x0, double y0, double z0, double x1, double y1, double z1, img::Color color) {
+    if (x0 >= this->width || y0 >= this->height || x1 >= this->width || y1 > this->height) {
+        std::stringstream ss;
+        ss << "Drawing line from (" << x0 << "," << y0 << ") to (" << x1 << "," << y1 << ") in image of width "
+           << this->width << " and height " << this->height;
+        throw std::runtime_error(ss.str());
+    }
+
+    double invZ = 0;
+
+    if (x0 == x1)
+    {
+        //special case for x0 == x1
+        for (unsigned int i = std::min(y0, y1); i <= std::max(y0, y1); i++)
+        {
+            if ((std::max(y0,y1) - i != 0 && (std::max(y0,y1) - std::min(y0,y1)) != 0))
+            {
+                invZ = ((std::max(y0,y1) - i) /
+                        (std::max(y0,y1) - std::min(y0,y1))) /
+                        z0
+                        + (1 - ((std::max(y0,y1) - i) /
+                        (std::max(y0,y1) - std::min(y0,y1)))) /
+                        z1;
+            }
+            else if((std::max(y0,y1) - i != 0 && (std::max(y0,y1) - std::min(y0,y1)) == 0))
+            {
+                invZ = ((std::max(y0,y1) - i)
+                        + (1 - std::max(y0,y1) - i));
+            }
+
+            if(invZ < zBuffer[(unsigned int) x0][i])
+            {
+                (*this)(x0, i) = color;
+                zBuffer[(unsigned int) x0][i] = invZ;
+            }
+
+
+        }
+    }
+    else if (y0 == y1)
+    {
+        //special case for y0 == y1
+        for (unsigned int i = std::min(x0, x1); i <= std::max(x0, x1); i++)
+        {
+            if (std::max(x0,x1) - i != 0 && (std::max(x0,x1) - std::min(x0,x1)) != 0)
+            {
+                invZ = ((std::max(x0,x1) - i) /
+                        (std::max(x0,x1) - std::min(x0,x1))) /
+                        z0
+                        + (1 - ((std::max(x0,x1) - i) /
+                        (std::max(x0,x1) - std::min(x0,x1)))) /
+                        z1;
+            }
+            else if(std::max(x0,x1) - i != 0 && (std::max(x0,x1) - std::min(x0,x1)) == 0)
+            {
+                invZ = ((std::max(x0,x1) - i)
+                        + (1 - std::max(x0,x1) - i));
+            }
+            if (invZ < zBuffer[i][(unsigned int) y0])
+            {
+                (*this)(i, y0) = color;
+                zBuffer[i][(unsigned int) y0] = invZ;
+            }
+        }
+    }
+    else
+    {
+        if (x0 > x1)
+        {
+            //flip points if x1>x0: we want x0 to have the lowest value
+            std::swap(x0, x1);
+            std::swap(y0, y1);
+
+            std::swap(z0, z1);
+        }
+        double m = ((double) y1 - (double) y0) / ((double) x1 - (double) x0);
+        if (-1.0 <= m && m <= 1.0)
+        {
+            for (unsigned int i = 0; i <= (x1 - x0); i++)
+            {
+                if (x1 - x0 - i != 0 and (x1 - x0) != 0)
+                {
+                    invZ = ((x1 - x0 - i) / (x1 - x0)) / z0 + (1 - ((x1 - x0 - i) / (x1 - x0))) / z1;
+                }
+
+                if (invZ < zBuffer[(unsigned int) std::round(x0 + i)][(unsigned int) std::round(y0 + m * i)])
+                {
+                    (*this)((unsigned int) std::round(x0 + i), (unsigned int) std::round(y0 + m * i)) = color;
+                    zBuffer[(unsigned int) std::round(x0 + i)][(unsigned int) std::round(y0 + m * i)] = invZ;
+                }
+            }
+        }
+        else if (m > 1.0)
+        {
+            for (unsigned int i = 0; i <= (y1 - y0); i++)
+            {
+                if(y1 - y0 - i != 0 and (y1 - y0) != 0)
+                {
+                    invZ = ((y1 - y0 - i) / (y1 - y0)) / z0 + (1 - ((y1 - y0 - i) / (y1 - y0))) / z1;
+                }
+
+                if (invZ < zBuffer[(unsigned int) std::round(x0 + (i / m))][(unsigned int) std::round(y0 + i)])
+                {
+                    (*this)((unsigned int) std::round(x0 + (i / m)), (unsigned int) std::round(y0 + i)) = color;
+                    zBuffer[(unsigned int) std::round(x0 + (i / m))][(unsigned int) std::round(y0 + i)] = invZ;
+                }
+            }
+        }
+        else if (m < -1.0)
+        {
+            for (unsigned int i = 0; i <= (y0 - y1); i++)
+            {
+                if(y0 - y1 - i != 0 and (y0 - y1) != 0)
+                {
+                    invZ = ((y0 - y1 - i) / (y0 - y1)) / z0 + (1 - ((y0 - y1 - i) / (y0 - y1))) / z1;
+                }
+                if (invZ < zBuffer[(unsigned int) std::round(x0 - (i / m))][(unsigned int) std::round(y0 - i)])
+                {
+                    (*this)((unsigned int) std::round(x0 - (i / m)), (unsigned int) std::round(y0 - i)) = color;
+                    zBuffer[(unsigned int) std::round(x0 - (i / m))][(unsigned int) std::round(y0 - i)] = invZ;
+                }
+            }
+        }
+    }
 }
 std::ostream& img::operator<<(std::ostream& out, EasyImage const& image)
 {

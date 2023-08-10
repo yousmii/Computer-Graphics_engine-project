@@ -94,7 +94,7 @@ img::EasyImage LSystem::generate2DLsystem(std::string filename, const int size, 
 
     Lines2D lines = draw2DLSystem(l_system, linecolor);
 
-    image = draw2DLines(lines, size, bgcolor);
+    image = draw2DLines(lines, size, bgcolor,0);
 
     return image;
 }

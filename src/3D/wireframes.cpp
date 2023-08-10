@@ -1,16 +1,6 @@
 #include "wireframes.h"
 
-Point2D Wireframes::pointAt(int index, Points2D points2D){
-    auto it = points2D.begin();
-    for(int i = 0; i < index ; i++){it++;}
-    return *it;
-}
 
-Vector3D Wireframes::pointAt(int index, std::vector<Vector3D> points3D){
-    auto it = points3D.begin();
-    for(int i = 0; i < index ; i ++){it++;}
-    return *it;
-}
 
 Point2D Wireframes::doProjection(const Vector3D &point, const double d) {
     Point2D point2D;
@@ -18,6 +8,7 @@ Point2D Wireframes::doProjection(const Vector3D &point, const double d) {
     double tempz = point.z * -1;
     point2D.x = d * point.x / tempz;
     point2D.y = d * point.y / tempz;
+    point2D.z = point.z;
 
     return point2D;
 }
@@ -37,16 +28,16 @@ Lines2D Wireframes::doProjection(const Figure &figure, double d) {
     {
         Points2D temppoints;
         for (auto index : face.point_indexes){
-            temppoints.push_back(pointAt(index, points));
+            temppoints.push_back(Utilities::pointAt(index, points));
         }
         for (int i = 0; i < temppoints.size() ; i++){
-            Point2D p1 = pointAt(i, temppoints);
+            Point2D p1 = Utilities::pointAt(i, temppoints);
             Point2D p2;
 
             if(i + 1 == temppoints.size()){
-                p2 = pointAt(0, temppoints);}
+                p2 = Utilities::pointAt(0, temppoints);}
             else{
-                p2 = pointAt(i + 1, temppoints);}
+                p2 = Utilities::pointAt(i + 1, temppoints);}
 
             lines.emplace_back(p1, p2, figure.color);
         }

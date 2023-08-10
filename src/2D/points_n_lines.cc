@@ -1,4 +1,8 @@
+#include <limits>
 #include "points_n_lines.h"
+#include "../utils/utilities.h"
+#include "../3D/zbuffer.h"
+
 #define _USE_MATH_DEFINES
 
 Point2D::Point2D(double x, double y) {
@@ -19,11 +23,14 @@ Line2D::Line2D() {
 
 Line2D::Line2D(Point2D p1, Point2D p2, img::Color color) {
     this->p1 = p1;
+    p1.z = std::numeric_limits<double>::infinity();
+
     this->p2 = p2;
+    p2.z = -std::numeric_limits<double>::infinity();
     this->color = color;
 }
 
-img::EasyImage draw2DLines(Lines2D &lines, const int size, img::Color bgcolor){
+img::EasyImage draw2DLines(Lines2D &lines, const int size, img::Color bgcolor, const int zbufType){
     // xmax, xmin, ymax en ymin bepalen
     double xMax = lines.begin()->p1.x;
     double xMin = lines.begin()->p1.x;
@@ -111,8 +118,31 @@ img::EasyImage draw2DLines(Lines2D &lines, const int size, img::Color bgcolor){
         line.p2.y += dy;
     }
 
-    for (const Line2D& line : lines) {
-        image.draw_line(line.p1.x, line.p1.y, line.p2.x, line.p2.y, line.color);
+    // Draw all the lines
+    ZBuffer zBuffer(image.get_width(), image.get_height());
+
+    switch(zbufType){ // will be extended in the future
+        case 1:
+            for (auto &line: lines) {
+                image.draw_zbuf_line(zBuffer,
+                                     line.p1.x, // We ronden ook ineens alle punten af
+                                     line.p1.y,
+                                     line.p1.z,
+                                     line.p2.x,
+                                     line.p2.y,
+                                     line.p2.z,
+                                     line.color);
+            }
+            break;
+
+        default:
+            for (auto &line: lines) {
+                image.draw_line(line.p1.x, // We ronden ook ineens alle punten af
+                                line.p1.y,
+                                line.p2.x,
+                                line.p2.y,
+                                line.color);
+            }
     }
 
     return image;

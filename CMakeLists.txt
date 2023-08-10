@@ -28,7 +28,7 @@ set(engine_sources
 		src/3D/world3D.cpp
 		src/3D/figure.cpp
 		src/utils/utilities.cpp
-		src/utils/utilities.h
+        src/3D/zbuffer.cpp
 )
 
 ############################################################

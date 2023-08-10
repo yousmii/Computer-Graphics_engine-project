@@ -9,6 +9,8 @@
 class World3D {
 public:
     std::string type;
+    int zbufType;
+
     int size;
     int nr_figures; // amount of figures in the world
 

@@ -11,11 +11,11 @@ img::EasyImage Generator::generate_image(const ini::Configuration &configuration
                 configuration["General"]["backgroundcolor"],
                 configuration["2DLSystem"]["color"]);
     }
-    else if(type == "Wireframe"){
+    else if(type == "Wireframe" || type == "ZBufferedWireframe"){
         World3D world(configuration);
         return world.drawWorld();
     }
     else{
-        throw std::runtime_error("Unknown type");
+        throw std::runtime_error("Unsupported type");
     }
 }

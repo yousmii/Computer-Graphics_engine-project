@@ -3,8 +3,7 @@
 
 #include <vector>
 #include <map>
-#include "../utils/vector3d.h"
-#include "../utils/easy_image.h"
+#include "../utils/utilities.h"
 
 
 class Face{
@@ -27,6 +26,29 @@ public:
 
     Points points;
     Faces faces;
+
+    //For cone, sphere, cylinder
+    int n;
+    double h;
+
+    //For Torus
+    int m;
+    double r;
+    double R;
+
+    // For 3D lsystem
+    std::string filename;
+
+    void createCube();
+    void createTetrahedron();
+    void createOctahedron();
+    void createIcosahedron();
+    void createDodecahedron();
+    void createCone();
+    void createSphere();
+    void createCylinder();
+    void createTorus();
+    void create3DLSystem();
 };
 
 typedef std::vector<Figure> Figures;
