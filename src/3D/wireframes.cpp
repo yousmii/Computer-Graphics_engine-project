@@ -49,11 +49,11 @@ Lines2D Wireframes::doProjection(const Figure &figure, double d) {
 
 Lines2D Wireframes::createLineDrawing(Vector3D &eye, Figure &figure, double d) {
 // Apply transformations
-    Transformations::applyTransformations(figure, Transformations::translate(figure.center));
-    Transformations::applyTransformations(figure, Transformations::scaleFigure(figure.scale));
+ Transformations::applyTransformations(figure, Transformations::scaleFigure(figure.scale));
     Transformations::applyTransformations(figure, Transformations::rotateX(figure.rotation.x));
     Transformations::applyTransformations(figure, Transformations::rotateY(figure.rotation.y));
     Transformations::applyTransformations(figure, Transformations::rotateZ(figure.rotation.z));
+    Transformations::applyTransformations(figure, Transformations::translate(figure.center));
 
 // Eye point transform
     Matrix V = Transformations::eyePointTrans(eye);
