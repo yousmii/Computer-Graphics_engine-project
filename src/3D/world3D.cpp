@@ -267,8 +267,8 @@ void World3D::draw_zbuf_triag(ZBuffer &zBuffer,
 
     // G bepalen
     Vector3D G;
-    G.x = (a.z + b.z + c.z) / 3.0;
-    G.y = (a.z + b.z + c.z) / 3.0;
+    G.x = (a.x + b.x + c.x) / 3.0;
+    G.y = (a.y + b.y + c.y) / 3.0;
     G.z = (a.z + b.z + c.z) / 3.0;
 
     // inv_zG bepalen
@@ -296,7 +296,7 @@ void World3D::draw_zbuf_triag(ZBuffer &zBuffer,
     dzdx = w.x / (-d * k);
     dzdy = w.y / (-d * k);
 
-    for (int y = yMin; y <= yMax - 0.5 ; y++){
+    for (int y = Utilities::roundToInt(yMin); y <= Utilities::roundToInt(yMax) ; y++){
         double xL_AB= std::numeric_limits<double>::infinity(), xL_AC= std::numeric_limits<double>::infinity(), xL_BC = std::numeric_limits<double>::infinity();
         double xR_AB= -std::numeric_limits<double>::infinity(), xR_AC= -std::numeric_limits<double>::infinity(), xR_BC = -std::numeric_limits<double>::infinity();
         double xi;
@@ -323,8 +323,8 @@ void World3D::draw_zbuf_triag(ZBuffer &zBuffer,
         }
 
         // Set xL and xR
-        int xL = Utilities::roundToInt(std::min(xL_AB, std::min(xL_AC, xL_BC)) + 0.5);
-        int xR = Utilities::roundToInt(std::max(xR_AB, std::max(xR_AC, xR_BC)) - 0.5);
+        int xL = Utilities::roundToInt(std::min(xL_AB, std::min(xL_AC, xL_BC)));
+        int xR = Utilities::roundToInt(std::max(xR_AB, std::max(xR_AC, xR_BC)));
 
         for (int x = xL; x < xR; x++){
             double inv_z = 1.0001 * inv_zG + (x - G.x) * dzdx + (y - G.y) * dzdy;
