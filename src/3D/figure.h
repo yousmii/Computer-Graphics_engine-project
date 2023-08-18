@@ -14,6 +14,26 @@ public:
 typedef std::vector<Face> Faces;
 typedef std::vector<Vector3D> Points;
 
+static Faces triangulate (Face face){
+    Faces faces;
+
+    if (face.point_indexes.size() == 3){
+        return {face};
+    }
+
+    for(int i = 1; i < face.point_indexes.size() - 1; i++){
+        Face newface;
+
+        newface.point_indexes.push_back(face.point_indexes[0]);
+        newface.point_indexes.push_back(face.point_indexes[i]);
+        newface.point_indexes.push_back(face.point_indexes[i + 1]);
+
+        faces.push_back(newface);
+    }
+
+    return faces;
+}
+
 class Figure{
 public:
     std::string type;

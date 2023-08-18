@@ -11,7 +11,7 @@ img::EasyImage Generator::generate_image(const ini::Configuration &configuration
                 configuration["General"]["backgroundcolor"],
                 configuration["2DLSystem"]["color"]);
     }
-    else if(type == "Wireframe" || type == "ZBufferedWireframe"){
+    else if(type == "Wireframe" || type == "ZBufferedWireframe" || type == "ZBuffering"){
         World3D world(configuration);
         return world.drawWorld();
     }

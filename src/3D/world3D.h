@@ -15,12 +15,24 @@ public:
     int nr_figures; // amount of figures in the world
 
     Vector3D eye;
-    int d;
+    double d;
+    double dx;
+    double dy;
+
     img::Color background_color;
     Figures figures;
 
     explicit World3D(const ini::Configuration &configuration);
     img::EasyImage drawWorld();
+
+    void draw_zbuf_triag(ZBuffer &zBuffer, img::EasyImage& image,
+                         const Vector3D &A,
+                         const Vector3D &B,
+                         const Vector3D &C,
+                         const img::Color &color) const;
+
+    img::EasyImage drawZBuffered();
+
 };
 
 

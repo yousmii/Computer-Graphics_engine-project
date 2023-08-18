@@ -38,8 +38,6 @@ public:
         for(int i = 0; i < index ; i ++){it++;}
         return *it;
     }
-
-    static Faces triangulate (Face face);
 };
 
 

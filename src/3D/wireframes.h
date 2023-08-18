@@ -6,11 +6,10 @@
 
 
 class Wireframes {
-
+public:
     static Point2D doProjection(const Vector3D &point, double d);
     static Lines2D doProjection(const Figure &figure, double d);
 
-public:
     static Lines2D createLineDrawing(Vector3D& eye, Figure &figure, double d);
     static Lines2D createLineDrawing(Vector3D& eye, Figures &figures, double d);
 };
