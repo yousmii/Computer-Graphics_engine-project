@@ -103,12 +103,6 @@ void Transformations::applyTransformations(Figure &figure, const Matrix &transfo
     }
 }
 
-void Transformations::applyTransformations(Figures &figures, const Matrix &transformation) {
-    for (auto &figure : figures) {
-        applyTransformations(figure, transformation);
-    }
-}
-
 
 
 

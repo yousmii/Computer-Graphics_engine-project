@@ -19,7 +19,6 @@ public:
     static Matrix eyePointTrans(const Vector3D &eye);
 
     static void applyTransformations(Figure &figure, const Matrix &transformation);
-    static void applyTransformations(Figures &figures, const Matrix &transformation);
 };
 
 
